@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenCash</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 { color: #2E8B57; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background: #2E8B57;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover { background: #246B47; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="signup" class="container">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-name" placeholder="Full Name">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button class="btn" onclick="signUp()">Sign Up</button>
+    </div>
+    
+    <div id="signin" class="container hidden">
+        <h2>Sign In</h2>
+        <input type="email" id="signin-email" placeholder="Email">
+        <input type="password" id="signin-password" placeholder="Password">
+        <button class="btn" onclick="signIn()">Sign In</button>
+    </div>
+    
+    <div id="dashboard" class="container hidden">
+        <h2>Welcome, <span id="account-holder"></span></h2>
+        <p>Balance: KES <span id="balance">0.00</span></p>
+        <button class="btn" onclick="showPage('deposit')">Deposit</button>
+        <button class="btn" onclick="showPage('withdraw')">Withdraw</button>
+        <button class="btn" onclick="showPage('investment')">Investment Panel</button>
+    </div>
+
+    <div id="investment" class="container hidden investment-container">
+        <h2>Investment Panel</h2>
+        <div class="package">
+            <h3>Starter Package</h3>
+            <p>Invest 1000 KES & Get 1500 KES in 24hrs</p>
+            <button class="btn" onclick="invest('starter')">Invest Now</button>
+        </div>
+        <div class="package">
+            <h3>Growth Package</h3>
+            <p>Invest 3000 KES & Get 5000 KES in 24hrs</p>
+            <button class="btn" onclick="invest('growth')">Invest Now</button>
+        </div>
+        <div class="package">
+            <h3>Premium Package</h3>
+            <p>Invest 5000 KES & Get 8500 KES in 24hrs</p>
+            <button class="btn" onclick="invest('premium')">Invest Now</button>
+            <input placeholder="Amount "min="5000" max="8500">
+        <button class="btn" onclick="process()">Submit</button>
+        <button class="btn" onclick="showPage('investment Panel')">Back</button>
+        </div>
+        <p>GreenCash. 2025 All Rights Reserved. Regulated by the Bank of America.</p>
+    </div>
+
+    <div id="deposit" class="container hidden">
+        <h2>Deposit</h2>
+        <p id="deposit-message"></p>
+        <select id="deposit-method">
+            <option value="MPESA">MPESA</option>
+            <option value="Airtel Money">Airtel Money</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Bank">Bank</option>
+        </select>
+        <input type="number" id="deposit-amount" placeholder="Amount (1000 - 250000)" min="1000" max="250000">
+        <button class="btn" onclick="processDeposit()">Submit</button>
+        <button class="btn" onclick="showPage('signup')">Back</button>
+    </div>
+    
+    <div id="withdraw" class="container hidden">
+        <h2>Withdraw</h2>
+        <select id="withdraw-method">
+            <option value="MPESA">MPESA</option>
+            <option value="Airtel Money">Airtel Money</option>
+            <option value="PayPal">PayPal</option>
+            <option value="Bank">Bank</option>
+        </select>
+        <input type="text" id="withdraw-phone" placeholder="Phone Number (0712345678)">
+        <input type="text" id="withdraw-holder-name" placeholder="Account Holder Name">
+        <input type="number" id="withdraw-amount" placeholder="Amount (1000 - 250000)" min="1000" max="250000">
+        <button class="btn" onclick="processWithdrawal()">Submit</button>
+        <button class="btn" onclick="showPage('signup')">Back</button>
+    </div>
+    
+    <div id="processing" class="container hidden">
+        <h2>Processing...</h2>
+        <p>Please wait 5 seconds</p>
+    </div>
+    
+    <div id="success" class="container hidden">
+        <h2>Transaction Successful</h2>
+        <p>Your transfer has been successfully completed.</p>
+        <p><span id="beneficiary"></span> has received KES <span id="trans-amount"></span>.</p>
+        <p>Transaction ID: TXN<span id="txn-id"></span></p>
+        <button class="btn" onclick="showPage('signup')">Back</button>
+    </div>
+    
+    <script>
+        let userData = JSON.parse(localStorage.getItem("user")) || { 
+            name: "", 
+            email: "", 
+            password: "", 
+            balance: 0 
+        };
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (userData.email) {
+                showPage("signin");
+            } else {
+                userData.balance = 0;
+                showPage("signup");
+            }
+        });
+
+        function signUp() {
+            userData.name = document.getElementById("signup-name").value;
+            userData.email = document.getElementById("signup-email").value;
+            userData.password = document.getElementById("signup-password").value;
+            userData.balance = 0;
+
+            if (userData.name && userData.email && userData.password) {
+                localStorage.setItem("user", JSON.stringify(userData));
+                showPage("signin");
+            }
+        }
+
+        function signIn() {
+            let email = document.getElementById("signin-email").value;
+            let password = document.getElementById("signin-password").value;
+
+            if (userData.email === email && userData.password === password) {
+                document.getElementById("account-holder").innerText = userData.name;
+                document.getElementById("balance").innerText = formatAmount(userData.balance);
+                showPage("dashboard");
+            }
+        }
+
+        function formatAmount(amount) {
+            return amount >= 1000 ? amount.toLocaleString() : amount.toFixed(2);
+        }
+
+        function showPage(page) {
+            document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+            document.getElementById(page).classList.remove("hidden");
+
+            if (page === "deposit" && userData.email !== "latiffaemilylucas@gmail.com") {
+                document.getElementById("deposit-message").innerText = "Your account is not verified to deposit and make investments. Please contact customer support for manual assistance +254 785713818.";
+                document.getElementById("deposit-method").style.display = "none";
+                document.getElementById("deposit-amount").style.display = "none";
+                document.querySelector("#deposit button").style.display = "none";
+            }
+        }
+
+        function processDeposit() {
+            if (userData.email !== "latiffaemilylucas@gmail.com") {
+                return;
+            }
+
+            let amount = parseInt(document.getElementById("deposit-amount").value);
+            if (amount >= 1000 && amount <= 250000) {
+                userData.balance += amount;
+                localStorage.setItem("user", JSON.stringify(userData));
+                document.getElementById("balance").innerText = formatAmount(userData.balance);
+                showPage("dashboard");
+            }
+        }
+
+        function processWithdrawal() {
+            if (userData.email !== "latiffaemilylucas@gmail.com") {
+                return;
+            }
+
+            let amount = parseInt(document.getElementById("withdraw-amount").value);
+            let fee = 108;
+            let totalAmount = amount + fee;
+
+            if (totalAmount > userData.balance) {
+                return;
+            }
+
+            userData.balance -= totalAmount;
+            localStorage.setItem("user", JSON.stringify(userData));
+
+            document.getElementById("trans-amount").innerText = formatAmount(amount);
+            document.getElementById("beneficiary").innerText = document.getElementById("withdraw-holder-name").value;
+            document.getElementById("txn-id").innerText = Math.floor(Math.random() * 1000000);
+
+            setTimeout(() => showPage("success"), 5000);
+            showPage("processing");
+        }
+
+
+         function invest(packageType) {
+             let userEmail = localStorage.getItem("userEmail");
+             let allowedEmails ="jackfayama@gmail.com", let allowedEmails"latiffaemilylucas@gmail.com";
+    
+             if (!allowedEmails.includes(userEmail)) {
+             ("Your account is not verified to proceed with the investment.");
+                return;
+            }
+    
+             let amount = prompt("Enter the amount to invest:");
+            if (amount && !isNaN(amount)) {
+            ("Investment successful! Your package: " + packageType);
+             }
+        }
+    </script>
+</body>
+</html>
