@@ -222,10 +222,10 @@
 
          function invest(packageType) {
         let userEmail = localStorage.getItem("userEmail");
-        let allowedEmails = ["jackfayama@gmail.com", "latiffaemilylucas@gmail.com"];
+        let allowedEmails = ["latiffaemilylucas@gmail.com"];
 
         if (!allowedEmails.includes(userEmail)) {
-            alert("Your account is not verified to proceed with the investment.");
+            showPage("Your account is not verified to proceed with the investment.");
             return;
         }
 
