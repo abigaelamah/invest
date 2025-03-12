@@ -220,15 +220,13 @@
             showPage("processing");
         }
 
+    function showPage(page) {
+            document.querySelectorAll(".container").forEach(div => div.classList.add("hidden"));
+            document.getElementById(page).classList.remove("hidden");
 
-         function invest(packageType) {
-        let userEmail = localStorage.getItem("userEmail");
-        let allowedEmails = ["latiffaemilylucas@gmail.com"];
-
-        if (!allowedEmails.includes(userEmail)) {
-            prompt("Your account is not verified to proceed with the investment.");
-            return;
-        }
+            if (page === "invest now" && userData.email !== "latiffaemilylucas@gmail.com") {
+            document.getElementById("invest no-message").innerText = "Your account is not verified to deposit and make investments. Please contact customer support for manual assistance +254 785713818.
+            }
 
         let amount = prompt("Enter the amount to invest:");
         amount = parseFloat(amount);
