@@ -221,19 +221,24 @@
 
 
          function invest(packageType) {
-             let userEmail = localStorage.getItem("userEmail");
-             let allowedEmails ="jackfayama@gmail.com", let allowedEmails"latiffaemilylucas@gmail.com";
-    
-             if (!allowedEmails.includes(userEmail)) {
-             ("Your account is not verified to proceed with the investment.");
-                return;
-            }
-    
-             let amount = prompt("Enter the amount to invest:");
-             if (amount && !isNaN(amount)) {
-            ("Investment successful! Your package: " + packageType);
-             }
+        let userEmail = localStorage.getItem("userEmail");
+        let allowedEmails = ["jackfayama@gmail.com", "latiffaemilylucas@gmail.com"];
+
+        if (!allowedEmails.includes(userEmail)) {
+            alert("Your account is not verified to proceed with the investment.");
+            return;
         }
+
+        let amount = prompt("Enter the amount to invest:");
+        amount = parseFloat(amount);
+
+        if (!isNaN(amount) && amount > 0) {
+            alert(`Investment successful! Your package: ${packageType}`);
+            showPage("investmentSuccessPage");
+        } else {
+            alert("Invalid amount entered. Please enter a valid number.");
+        }
+    }
     </script>
 </body>
 </html>
