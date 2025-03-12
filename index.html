@@ -81,7 +81,6 @@
             <h3>Premium Package</h3>
             <p>Invest 5000 KES & Get 8500 KES in 24hrs</p>
             <button class="btn" onclick="invest('premium')">Invest Now</button>
-            
         </div>
         <p>GreenCash. 2025 All Rights Reserved. Regulated by the Bank of America.</p>
     </div>
@@ -220,28 +219,26 @@
             showPage("processing");
         }
 
-         <div id="messageBox" class="message-box">
-        <p>Your account is not verified to make an investment.</p>
-        <button class="btn" onclick="closeMessage()">OK</button>
-    </div>
 
-        function invest() {
-            document.getElementById("messageBox").style.display = "block";
-        }
+         function invest(packageType) {
+        let userEmail = localStorage.getItem("userEmail");
+        let allowedEmails = ["jackfayama@gmail.com", "latiffaemilylucas@gmail.com"];
 
-        function closeMessage() {
-            document.getElementById("messageBox").style.display = "none";
+        if (!allowedEmails.includes(userEmail)) {
+            alert("Your account is not verified to proceed with the investment.");
+            return;
         }
 
         let amount = prompt("Enter the amount to invest:");
         amount = parseFloat(amount);
 
         if (!isNaN(amount) && amount > 0) {
-            prompt(`Investment successful! Your package: ${packageType}`);
+            alert(`Investment successful! Your package: ${packageType}`);
             showPage("investmentSuccessPage");
         } else {
-            prompt("Invalid amount entered. Please enter a valid number.");
+            alert("Invalid amount entered. Please enter a valid number.");
         }
+    }
     </script>
 </body>
 </html>
