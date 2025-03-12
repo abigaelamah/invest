@@ -81,9 +81,6 @@
             <h3>Premium Package</h3>
             <p>Invest 5000 KES & Get 8500 KES in 24hrs</p>
             <button class="btn" onclick="invest('premium')">Invest Now</button>
-            <input placeholder="Amount "min="5000" max="8500">
-        <button class="btn" onclick="process()">Submit</button>
-        <button class="btn" onclick="showPage('investment Panel')">Back</button>
         </div>
         <p>GreenCash. 2025 All Rights Reserved. Regulated by the Bank of America.</p>
     </div>
@@ -99,7 +96,6 @@
         </select>
         <input type="number" id="deposit-amount" placeholder="Amount (1000 - 250000)" min="1000" max="250000">
         <button class="btn" onclick="processDeposit()">Submit</button>
-        <button class="btn" onclick="showPage('signup')">Back</button>
     </div>
     
     <div id="withdraw" class="container hidden">
@@ -114,7 +110,6 @@
         <input type="text" id="withdraw-holder-name" placeholder="Account Holder Name">
         <input type="number" id="withdraw-amount" placeholder="Amount (1000 - 250000)" min="1000" max="250000">
         <button class="btn" onclick="processWithdrawal()">Submit</button>
-        <button class="btn" onclick="showPage('signup')">Back</button>
     </div>
     
     <div id="processing" class="container hidden">
@@ -235,7 +230,7 @@
             }
     
              let amount = prompt("Enter the amount to invest:");
-            if (amount && !isNaN(amount)) {
+             if (amount && !isNaN(amount)) {
             ("Investment successful! Your package: " + packageType);
              }
         }
